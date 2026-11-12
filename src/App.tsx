@@ -20,7 +20,7 @@ type Food = {
 };
 
 const FOODS: Food[] = [
-  { id: "meat", name: "お肉", emoji: "🍖", points: -100, weight: 0 },
+  { id: "meat", name: "お肉", emoji: "🍖", points: -500, weight: 0 },
   { id: "fish", name: "お魚", emoji: "🐟", points: 10, weight: 24 },
   { id: "vegetable", name: "野菜", emoji: "🥦", points: 5, weight: 30 },
   { id: "rice", name: "ご飯", emoji: "🍚", points: 20, weight: 17 },
@@ -29,6 +29,53 @@ const FOODS: Food[] = [
   { id: "tofu", name: "豆腐", emoji: "🧊", points: -2, weight: 10 },
   { id: "natto", name: "納豆", emoji: "🫘", points: -5, weight: 7 }
 ];
+
+type MeatRank = {
+  name: string;
+  emoji: string;
+  message: string;
+};
+
+// 合計点から肉ランクを判定
+const getMeatRank = (score: number): MeatRank => {
+  if (score <= 100) {
+    return {
+      name: "廃棄ランク",
+      emoji: "🗑️",
+      message: "お肉の価値がありません……！"
+    };
+  }
+
+  if (score < 499) {
+    return {
+      name: "激安ランク",
+      emoji: "🥩",
+      message: "お買い得なお肉です！"
+    };
+  }
+
+  if (score < 1000) {
+    return {
+      name: "庶民ランク",
+      emoji: "🍖",
+      message: "親しみやすいお肉です！"
+    };
+  }
+
+  if (score < 2000) {
+    return {
+      name: "ご褒美ランク",
+      emoji: "✨",
+      message: "ちょっと贅沢なお肉です！"
+    };
+  }
+
+  return {
+    name: "高級ランク",
+    emoji: "👑",
+    message: "最高級のお肉です！"
+  };
+};
 
 type Pig = {
   x: number;
@@ -116,6 +163,9 @@ export default function App() {
   const projectilesRef = useRef<Projectile[]>([]);
   const nextId = useRef(0);
   const meatRef = useRef(5);
+
+  // 現在のスコアから肉ランクを取得
+  const meatRank = getMeatRank(score);
 
   // ゲーム開始
   const startGame = () => {
@@ -514,6 +564,25 @@ export default function App() {
 
                 <div className="final-score">
                   {score}<small>点</small>
+                </div>
+
+                {/* 肉ランク */}
+                <div className="meat-rank">
+                  <div className="meat-rank-caption">
+                    あなたのお肉ランク
+                  </div>
+
+                  <div className="meat-rank-emoji">
+                    {meatRank.emoji}
+                  </div>
+
+                  <div className="meat-rank-name">
+                    {meatRank.name}
+                  </div>
+
+                  <div className="meat-rank-message">
+                    {meatRank.message}
+                  </div>
                 </div>
 
                 <p>
